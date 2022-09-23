@@ -1,6 +1,10 @@
-name: dlib
 channels:
   - conda-forge
 dependencies:
   - streamlit >= 0.73
   - dlib
+  - scipy
+  - imutils
+  - streamlit
+  - opencv-python
+  - cmake
