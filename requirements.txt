@@ -1,5 +1,6 @@
 scipy
 imutils
 streamlit
+cmake
 dlib
 opencv-python
