@@ -3,3 +3,6 @@ imutils
 streamlit
 dlib
 opencv-python
+cmake==3.18.4.post1
+cycler==0.10.0
+dlib==19.21.0
