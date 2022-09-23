@@ -2,4 +2,4 @@ scipy
 imutils
 streamlit
 dlib
-cv2
+opencv-python
