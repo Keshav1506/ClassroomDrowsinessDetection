@@ -2,7 +2,7 @@ streamlit
 imutils
 scipy
 cmake==3.18.4.post1
-dlib-bin
+dlib
 numpy==1.20.2
 opencv-python-headless
 streamlit-webrtc
