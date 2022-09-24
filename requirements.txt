@@ -6,4 +6,5 @@ dlib-bin
 numpy==1.20.2
 opencv-python-headless
 streamlit-webrtc
+asyncio
 aiortc
