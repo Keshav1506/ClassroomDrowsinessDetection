@@ -70,7 +70,7 @@ def framefn(frame):
 
         if ear < thresh:                                              #st.session_state.flag > minsecs:
             cv2.putText(frame, "    ALERT!, DROWSINESS DETECTED!", (10, 30),
-                    cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0, 0, 255), 2)
+                    cv2.FONT_HERSHEY_SIMPLEX, 0.7, (255, 0, 0), 2)
 
     Image.fromarray(frame).save("temp.jpg")
     img = Image.open("temp.jpg")
