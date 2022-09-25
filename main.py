@@ -20,10 +20,9 @@ import cv2
 ###################################################################### Operating Code  ######################################################################
 
 
-#needs work (session states throwing error)
+if "counter" not in st.session_state:
+    st.session_state.counter = 0
 
-#if 'flag' not in st.session_state:
-    #st.session_state.flag = 0
 
 
 thresh = 0.25
@@ -62,13 +61,12 @@ def framefn(frame):
         cv2.drawContours(frame, [rightEyeHull], -1, (0, 255, 0), 1)
         cv2.drawContours(frame, [mHull], -1, (0, 255, 0), 1)
 
-        # needs work (session states throwing error)
-        # if ear < thresh:
-        #     st.session_state.flag+=1
-        # else:
-        #     st.session_state.flag = 0
+        if ear < thresh:
+            st.session_state.counter+=1
+        else:
+            st.session_state.counter = 0
 
-        if ear < thresh:                                              #st.session_state.flag > minsecs:
+        if st.session_state.counter > minframes:
             cv2.putText(frame, "    ALERT!, DROWSINESS DETECTED!", (10, 30),
                     cv2.FONT_HERSHEY_SIMPLEX, 0.7, (255, 0, 0), 2)
 
