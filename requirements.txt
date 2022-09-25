@@ -9,5 +9,5 @@ asyncio
 opencv_python==4.5.1.48
 aiortc==1.0.0
 Pillow==8.1.0
-streamlit_webrt
+streamlit_webrtc
 aioice
