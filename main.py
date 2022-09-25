@@ -93,7 +93,9 @@ framenumber= st.empty()
 
 frame_check = 10
 
-webrtc_streamer(key="opencv-filter",mode=WebRtcMode.SENDRECV,video_frame_callback=framefn,async_processing=False,media_stream_constraints={"video": True, "audio": False})
+webrtc_streamer(key="opencv-filter",mode=WebRtcMode.SENDRECV,video_frame_callback=framefn,async_processing=False,media_stream_constraints={"video": True, "audio": False},rtc_configuration={  # Add this config
+        "iceServers": [{"urls": ["stun:stun.l.google.com:19302"]}]
+    })
 
 infnc.text(ear)
 framenumber.text(flag)
