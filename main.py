@@ -61,12 +61,12 @@ def framefn(frame):
         cv2.drawContours(frame, [rightEyeHull], -1, (0, 255, 0), 1)
         cv2.drawContours(frame, [mHull], -1, (0, 255, 0), 1)
 
-        if ear < thresh:
-            st.session_state.counter+=1
-        else:
-            st.session_state.counter = 0
+        #if ear < thresh:
+            #st.session_state.counter+=1
+        #else:
+            #st.session_state.counter = 0
 
-        if st.session_state.counter > minframes:
+        if ear < thresh:
             cv2.putText(frame, "    ALERT!, DROWSINESS DETECTED!", (10, 30),
                     cv2.FONT_HERSHEY_SIMPLEX, 0.7, (255, 0, 0), 2)
 
