@@ -1,11 +1,12 @@
 from scipy.spatial import distance
 from PIL import Image
+import asyncio
+import os
 import numpy
 from streamlit_webrtc import (
     RTCConfiguration,
     WebRtcMode,
     WebRtcStreamerContext,
-	
     webrtc_streamer,
 )
 import imutils
@@ -16,10 +17,18 @@ from av import VideoFrame as vf
 import dlib
 import cv2
 
+###################################################################### Operating Code  ######################################################################
+
+
+#needs work (session states throwing error)
+
+#if 'flag' not in st.session_state:
+    #st.session_state.flag = 0
+
+
 thresh = 0.25
-ear=0.0
-flag=0
-frame_check = 20
+minframes = 20
+
 detect = dlib.get_frontal_face_detector()
 predict = dlib.shape_predictor("shape_predictor_68_face_landmarks.dat")# Dat file is the crux of the code
 
@@ -28,12 +37,11 @@ predict = dlib.shape_predictor("shape_predictor_68_face_landmarks.dat")# Dat fil
 (mStart, mEnd) = face_utils.FACIAL_LANDMARKS_68_IDXS["mouth"]
 
 
-
 def framefn(frame):
-    global ear,flag
+
     img = frame.to_image()
-    img.save("test.jpg")
-    img=cv2.imread("test.jpg")
+    img.save("temp.jpg")
+    img=cv2.imread("temp.jpg")
 
     frame = imutils.resize(img, width=450)
     gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
@@ -46,8 +54,7 @@ def framefn(frame):
         mouth = shape[mStart:mEnd]
         leftEAR = eye_aspect_ratio(leftEye)
         rightEAR = eye_aspect_ratio(rightEye)
-        ears = (leftEAR + rightEAR) / 2.0
-        ear= ears
+        ear = (leftEAR + rightEAR) / 2.0
         leftEyeHull = cv2.convexHull(leftEye)
         rightEyeHull = cv2.convexHull(rightEye)
         mHull = cv2.convexHull(mouth)
@@ -55,13 +62,20 @@ def framefn(frame):
         cv2.drawContours(frame, [rightEyeHull], -1, (0, 255, 0), 1)
         cv2.drawContours(frame, [mHull], -1, (0, 255, 0), 1)
 
-        if ear <= 0.5:
-            flag += 1
+        # needs work (session states throwing error)
+        # if ear < thresh:
+        #     st.session_state.flag+=1
+        # else:
+        #     st.session_state.flag = 0
 
+        if ear < thresh:                                              #st.session_state.flag > minsecs:
+            cv2.putText(frame, "****************ALERT!, drowsy ****************", (10, 30),
+                    cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0, 0, 255), 2)
 
-    Image.fromarray(frame).save("test1.jpg")
-    img = Image.open("test1.jpg")
+    Image.fromarray(frame).save("temp.jpg")
+    img = Image.open("temp.jpg")
     return vf.from_image(img)
+
 
 def eye_aspect_ratio(eye):
     A = distance.euclidean(eye[1], eye[5])
@@ -69,6 +83,7 @@ def eye_aspect_ratio(eye):
     C = distance.euclidean(eye[0], eye[3])
     ear = (A + B) / (2.0 * C)
     return ear
+
 
 def mouth_aspect_ratio(mouth):
 
@@ -80,33 +95,26 @@ def mouth_aspect_ratio(mouth):
 
 	return mar
 
+#############################################################################################################################################################
+
+
+
+
+###################################################################### User Interface  ######################################################################
+
+
+#Page Title
 st.title("Student Drowsiness Detection")
-st.image("image.jfif")
+
+
+#Banner Image
+st.image("image.jpg")
+
+#Streamer Element
+webrtc_streamer(key="opencv-filter",mode=WebRtcMode.SENDRECV,video_frame_callback=framefn,async_processing=True,media_stream_constraints={"video": True, "audio": False},rtc_configuration={"iceServers": [{"urls": ["stun:stun.l.google.com:19302"]}]})
 
 
 
 
-status = st.empty()
-infnc=st.empty()
-framenumber= st.empty()
 
-
-frame_check = 10
-
-webrtc_streamer(key="opencv-filter",mode=WebRtcMode.SENDRECV,video_frame_callback=framefn,async_processing=False,media_stream_constraints={"video": True, "audio": False},rtc_configuration={  # Add this config
-        "iceServers": [{"urls": ["stun:stun.l.google.com:19302"]}]
-    })
-
-infnc.text(ear)
-framenumber.text(flag)
-if flag >= frame_check:
-    status.markdown("<h1 style='text-align: center; color: red;'>Drowsy!</h1>", unsafe_allow_html=True)
-
-
-else:
-    status.markdown("<h1 style='text-align: center; color: green;'>Active</h1>", unsafe_allow_html=True)
-    flag = 0
-
-
-
-
+#############################################################################################################################################################
