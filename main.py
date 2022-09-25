@@ -5,6 +5,7 @@ from streamlit_webrtc import (
     RTCConfiguration,
     WebRtcMode,
     WebRtcStreamerContext,
+	ClientSettings,
     webrtc_streamer,
 )
 import imutils
@@ -92,7 +93,7 @@ framenumber= st.empty()
 
 frame_check = 10
 
-webrtc_streamer(key="opencv-filter",mode=WebRtcMode.SENDRECV,video_frame_callback=framefn,async_processing=False,media_stream_constraints={"video": True, "audio": False})
+webrtc_streamer(key="opencv-filter",mode=WebRtcMode.SENDRECV,video_frame_callback=framefn,async_processing=False,media_stream_constraints={"video": True, "audio": False},client_settings=ClientSettings)
 
 infnc.text(ear)
 framenumber.text(flag)
